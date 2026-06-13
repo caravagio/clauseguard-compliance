@@ -1,0 +1,195 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-01",
+  "description": "Financial AI Compliance Rulebook — 20 rules across 6 categories based on US federal financial regulations",
+  "categories": [
+    "Model Risk Management",
+    "Explainability & Transparency",
+    "Fair Lending & Bias",
+    "Data Governance",
+    "Third-Party AI Risk",
+    "Audit & Accountability"
+  ],
+  "rules": [
+    {
+      "id": "MRM-001",
+      "category": "Model Risk Management",
+      "rule_name": "Independent Model Validation",
+      "description": "All AI/ML models used in financial decision-making must undergo independent validation by a party separate from model development before deployment. Validation must assess conceptual soundness, data integrity, outcome analysis, and ongoing monitoring plans. Independence means the validator has no stake in the model's development or performance.",
+      "severity": "critical",
+      "regulatory_source": "SR 11-7 (Federal Reserve / OCC, 2011) — Guidance on Model Risk Management; OCC Comptroller's Handbook (2021)",
+      "violation_trigger": "Document does not mention independent third-party or internally independent validation of AI models prior to deployment, or relies solely on developer self-assessment"
+    },
+    {
+      "id": "MRM-002",
+      "category": "Model Risk Management",
+      "rule_name": "Ongoing Model Performance Monitoring",
+      "description": "AI models must be monitored continuously post-deployment for performance degradation, data drift, and unexpected behavioral changes. Monitoring must include outcome analysis, population stability indices (PSI), periodic benchmarking against challenger models, and defined thresholds triggering escalation or re-validation.",
+      "severity": "critical",
+      "regulatory_source": "SR 11-7 Section III — Model Risk Management Framework; OCC 2011-12; Federal Reserve MRM Guidance Update (2021)",
+      "violation_trigger": "No ongoing monitoring program, drift detection, population stability analysis, or performance benchmarking described for deployed AI models"
+    },
+    {
+      "id": "MRM-003",
+      "category": "Model Risk Management",
+      "rule_name": "Model Inventory and Documentation",
+      "description": "Organizations must maintain a comprehensive model inventory documenting all AI systems, including purpose, data inputs/outputs, known limitations, risk tier classification, validation status, and owner. Documentation must be sufficient to allow independent recreation, review, and regulatory examination.",
+      "severity": "warning",
+      "regulatory_source": "SR 11-7 Section II; OCC Comptroller's Handbook — Model Risk Management (2021); FFIEC IT Examination Handbook",
+      "violation_trigger": "No model inventory, risk tiering system, or comprehensive technical documentation referenced; documentation insufficient for independent review"
+    },
+    {
+      "id": "MRM-004",
+      "category": "Model Risk Management",
+      "rule_name": "Model Change Management Protocol",
+      "description": "Material changes to AI models — including retraining on new data, feature additions or removals, threshold adjustments, or architecture changes — must follow a formal change management process. Re-validation requirements must be proportional to change materiality, and institutions must define what constitutes a 'material' change.",
+      "severity": "warning",
+      "regulatory_source": "SR 11-7 Section IV; FFIEC IT Examination Handbook — Model Risk; OCC 2023-17 (Third-Party Risk)",
+      "violation_trigger": "No change management protocol, materiality thresholds, versioning controls, or re-validation triggers defined for AI model updates"
+    },
+    {
+      "id": "EXT-001",
+      "category": "Explainability & Transparency",
+      "rule_name": "Adverse Action Notice with AI-Specific Reasons",
+      "description": "When an AI or ML model contributes to an adverse action on a credit application (denial, increased rate, reduced limit), the applicant must receive specific, accurate, and principal reasons in plain language. Generic 'credit score' codes are insufficient when the AI model applies criteria beyond a traditional scorecard. The CFPB has clarified that 'black box' explanations do not satisfy Regulation B.",
+      "severity": "critical",
+      "regulatory_source": "Regulation B (ECOA, 12 CFR Part 1002); CFPB Circular 2022-03 on Adverse Action Notices and AI/ML Models",
+      "violation_trigger": "Document involves consumer-facing AI credit decisions but does not address how adverse action reasons are generated from model outputs, or relies on generic reason codes"
+    },
+    {
+      "id": "EXT-002",
+      "category": "Explainability & Transparency",
+      "rule_name": "Model Explainability for Internal Stakeholders",
+      "description": "AI model outputs must be interpretable by internal stakeholders including risk managers, compliance officers, and auditors. Complex or opaque models (neural networks, large ensembles) used in material financial decisions require documented post-hoc explanation methods (e.g., SHAP, LIME) with clear documentation of their limitations. Explainability must support individual decision review.",
+      "severity": "warning",
+      "regulatory_source": "SR 11-7 — Conceptual Soundness Requirements; NIST AI RMF (2023) Explainability (MAP 5.1); OCC Model Risk Examination Procedures",
+      "violation_trigger": "Complex ML model described or deployed in material decisions without documented explainability methods, individual-level explanation capability, or internal interpretability controls"
+    },
+    {
+      "id": "EXT-003",
+      "category": "Explainability & Transparency",
+      "rule_name": "Customer Disclosure of AI Use in Decisions",
+      "description": "Customers must be meaningfully informed when AI systems make or materially influence decisions affecting them. Disclosures must describe the general nature of AI use, categories of data used, and applicable customer rights. Disclosures cannot be buried or obscured, and must be updated when material AI practices change.",
+      "severity": "warning",
+      "regulatory_source": "CFPB Supervision and Examination Manual (UDAAP); FTC Act Section 5 (deceptive practices); EU AI Act Art. 13 (cross-border benchmark); GLBA Privacy Rule",
+      "violation_trigger": "AI system materially affects consumers but document lacks customer disclosure requirements, privacy notice reference to AI use, or consumer rights around automated decisions"
+    },
+    {
+      "id": "FLB-001",
+      "category": "Fair Lending & Bias",
+      "rule_name": "Disparate Impact Testing Requirement",
+      "description": "AI models used in credit, insurance, employment, or housing decisions must be tested for disparate impact on federally protected classes: race, color, religion, national origin, sex, marital status, age, and familial status. Testing must occur before deployment and at defined intervals thereafter. Results must be documented with statistical significance levels and methodologies disclosed.",
+      "severity": "critical",
+      "regulatory_source": "Equal Credit Opportunity Act (ECOA, 15 U.S.C. § 1691); Fair Housing Act (42 U.S.C. § 3604); CFPB Fair Lending Examination Procedures; HUD Fair Lending Guidance (2013)",
+      "violation_trigger": "No disparate impact analysis, statistical bias testing, or fairness metrics described for AI model used in consequential decisions affecting protected classes"
+    },
+    {
+      "id": "FLB-002",
+      "category": "Fair Lending & Bias",
+      "rule_name": "Proxy Variable and Redlining Prevention",
+      "description": "AI models must not include features that serve as proxies for protected characteristics. High-risk proxy variables include geographic data (zip codes, census tracts), purchasing behavior patterns, device type, and internet browser — all of which can correlate with race, national origin, or disability. All model features must undergo documented proxy correlation analysis before inclusion.",
+      "severity": "critical",
+      "regulatory_source": "ECOA Regulation B (12 CFR 1002); CFPB Circular 2023-02 on ECOA and Credit Models; OCC Fair Lending Handbook; DOJ Redlining Settlement Guidance",
+      "violation_trigger": "Model features include geographic variables, behavioral data, or other proxy-risk inputs without documented proxy correlation analysis and documented justification for inclusion"
+    },
+    {
+      "id": "FLB-003",
+      "category": "Fair Lending & Bias",
+      "rule_name": "Bias Remediation and Regulatory Reporting",
+      "description": "When bias or disparate impact is detected through testing, institutions must document all remediation steps taken, re-test after remediation to confirm resolution, and maintain complete records of bias findings, methodologies, and corrective actions. Significant disparate impact findings may require regulatory notification or self-reporting.",
+      "severity": "warning",
+      "regulatory_source": "CFPB Examination Procedures; DOJ Fair Housing Division Investigation Standards; Federal Reserve CRA / Fair Lending Examination Procedures",
+      "violation_trigger": "No bias remediation process, escalation path for discrimination findings, re-testing requirement after remediation, or bias finding documentation protocol described"
+    },
+    {
+      "id": "DG-001",
+      "category": "Data Governance",
+      "rule_name": "Consumer Data Consent and Privacy Notice",
+      "description": "Personal consumer financial data used in AI model training or inference must have an appropriate legal basis (consent, legitimate interest, or legal obligation). Privacy notices must be updated to disclose AI use of personal data, including categories of data used, decision types, and data retention. Consumers must be able to exercise rights around their data.",
+      "severity": "critical",
+      "regulatory_source": "Gramm-Leach-Bliley Act (GLBA) Privacy Rule (16 CFR Part 313); CCPA/CPRA (California Civil Code § 1798); CFPB Privacy Rule Examination Procedures",
+      "violation_trigger": "AI model uses consumer personal financial data without documented consent framework, legal basis for processing, or updated privacy notice referencing AI data use"
+    },
+    {
+      "id": "DG-002",
+      "category": "Data Governance",
+      "rule_name": "Training Data Retention and Lineage Documentation",
+      "description": "Training datasets used for financial AI models must be retained per regulatory schedules — minimum 25 months for credit-related records under Regulation B, and typically 3-7 years for model examination readiness. Full data lineage documentation must trace data from original source through all transformation and preprocessing steps to model input.",
+      "severity": "warning",
+      "regulatory_source": "ECOA Regulation B (12 CFR 1002.12 — 25-month adverse action retention); SEC Rule 17a-4; FINRA Rules 4511–4512; OCC Records Retention Guidelines",
+      "violation_trigger": "No data retention schedule meeting regulatory minimums, missing data lineage documentation, or training data provenance not traceable from source to model input"
+    },
+    {
+      "id": "DG-003",
+      "category": "Data Governance",
+      "rule_name": "Cross-Border Data Transfer Safeguards",
+      "description": "Consumer financial data transferred internationally for AI processing, storage, or model training must comply with applicable cross-border transfer restrictions. Contracts and policies must specify: data residency requirements, transfer mechanisms (Standard Contractual Clauses for EU data), governing jurisdiction, and what happens to data upon contract termination.",
+      "severity": "warning",
+      "regulatory_source": "GLBA; GDPR Standard Contractual Clauses (for EU personal data); NY DFS Cybersecurity Regulation (23 NYCRR 500); OCC Third-Party Risk (OCC 2023-17)",
+      "violation_trigger": "AI processing involves or may involve cross-border data transfer without documented safeguards, data residency clause, applicable transfer mechanism, or jurisdiction specification"
+    },
+    {
+      "id": "TPR-001",
+      "category": "Third-Party AI Risk",
+      "rule_name": "Pre-Contract Vendor AI Due Diligence",
+      "description": "Before deploying third-party AI systems in any financial decision-making, institutions must conduct comprehensive pre-contract due diligence. This must cover: model validation documentation, independent bias testing results, security controls and SOC 2 certifications, financial stability, regulatory compliance history, and subcontractor AI dependencies (fourth-party risk).",
+      "severity": "critical",
+      "regulatory_source": "OCC Third-Party Risk Management Guidance (OCC 2023-17, June 2023); Federal Reserve SR 13-19; FFIEC Third-Party Risk Guidance; CFPB Vendor Management Guidance",
+      "violation_trigger": "Third-party AI vendor engagement referenced without evidence of pre-contract due diligence, validation review, vendor risk assessment, or vendor compliance certification review"
+    },
+    {
+      "id": "TPR-002",
+      "category": "Third-Party AI Risk",
+      "rule_name": "Contractual AI Performance Standards and SLAs",
+      "description": "Contracts with AI vendors must specify measurable, enforceable performance standards: minimum accuracy/discrimination power (e.g., Gini coefficient), fairness metrics by demographic group, system uptime SLAs, model update notification timelines, and explicit remedies (service credits, termination rights) for performance breaches. Vague standards are unenforceable.",
+      "severity": "warning",
+      "regulatory_source": "OCC 2023-17 Third-Party Risk (Section III); CFPB Vendor Management Guidance; Federal Reserve SR 13-19; FFIEC Outsourcing Technology Services",
+      "violation_trigger": "Vendor AI contract lacks specific, measurable performance SLAs, fairness benchmarks tied to demographic outcomes, or defined contractual remedies for AI model performance failures"
+    },
+    {
+      "id": "TPR-003",
+      "category": "Third-Party AI Risk",
+      "rule_name": "Right to Audit Vendor AI Systems",
+      "description": "Contracts with third-party AI vendors must explicitly preserve the institution's right to: (1) audit model performance and documentation annually, (2) grant regulators examination access to vendor AI systems and records on demand, (3) commission independent model testing, and (4) receive all validation and monitoring reports within defined timelines. Vague 'cooperation' language is insufficient.",
+      "severity": "warning",
+      "regulatory_source": "OCC 2023-17 (Section IV — Ongoing Monitoring); Federal Reserve SR 13-19; OCC Examination Guidance on Third-Party Relationships; CFPB Supervisory Guidance",
+      "violation_trigger": "Vendor contract lacks explicit right-to-audit clause, regulator examination access provision, or independent testing right — relying only on vague cooperation language"
+    },
+    {
+      "id": "AA-001",
+      "category": "Audit & Accountability",
+      "rule_name": "AI Decision Logging and Immutable Audit Trail",
+      "description": "All AI-assisted decisions in regulated financial activities must be logged with sufficient detail to fully reconstruct each decision: model version and hash, input feature values or categories, output score and decision, applicable thresholds at time of decision, timestamp, and consuming application. Logs must be tamper-evident, retained per regulatory schedules, and accessible to compliance and regulators.",
+      "severity": "critical",
+      "regulatory_source": "SR 11-7 (audit and traceability); ECOA Regulation B (12 CFR 1002.12 recordkeeping); SEC Rule 17a-4 (broker-dealer records); FINRA Rule 4511; OCC Examination Procedures",
+      "violation_trigger": "No decision logging system, audit trail, or traceability mechanism described; log retention insufficient; logs not accessible to compliance or regulators"
+    },
+    {
+      "id": "AA-002",
+      "category": "Audit & Accountability",
+      "rule_name": "Regulatory Examination Readiness",
+      "description": "Institutions must maintain documentation sufficient to demonstrate AI compliance to regulators at any time without advance preparation. This includes: model validation reports (within 12 months), bias testing results, data governance policies, monitoring dashboards with historical data, and the ability for regulators to reproduce key model outputs from logged inputs.",
+      "severity": "warning",
+      "regulatory_source": "OCC Examination Procedures (Model Risk); Federal Reserve Supervision and Regulation Letters; CFPB Examination Manual (UDAP/UDAAP); OCC 2023-17",
+      "violation_trigger": "Documentation gaps that would prevent regulatory examination of AI model compliance, performance, or fairness; inability to reproduce historical model outputs for examiner review"
+    },
+    {
+      "id": "AA-003",
+      "category": "Audit & Accountability",
+      "rule_name": "AI-Specific Incident Response and Escalation",
+      "description": "A formal incident response plan must address AI-specific failure modes distinct from standard IT incidents: model errors causing consumer harm, discriminatory output events, training data poisoning or corruption, model degradation below performance thresholds, and adversarial input attacks. Escalation paths to senior management and the board must be defined with specific notification timelines.",
+      "severity": "warning",
+      "regulatory_source": "FFIEC Cybersecurity Assessment Tool; OCC 2023-17 (Section V); NY DFS 23 NYCRR 500.16; NIST AI RMF Govern 1.7 (2023); CFPB Supervisory Guidance on AI",
+      "violation_trigger": "Incident response plan addresses only standard IT outages but lacks AI-specific failure scenarios: model accuracy failures, discriminatory output incidents, or consumer harm remediation procedures"
+    },
+    {
+      "id": "AA-004",
+      "category": "Audit & Accountability",
+      "rule_name": "Board and Senior Management AI Governance Oversight",
+      "description": "The board of directors or a designated board-level committee must have documented oversight of material AI risk, including approval of AI risk appetite and policy. Senior management must receive regular (at minimum quarterly) AI risk reporting. AI governance must be integrated into the enterprise risk management framework with clear ownership and accountability.",
+      "severity": "info",
+      "regulatory_source": "SR 11-7 Section I — Governance and Controls; OCC 2023-17 (Board Oversight); Federal Reserve Model Risk Management Guidance Update (2021); OCC Heightened Standards (12 CFR Part 30)",
+      "violation_trigger": "No board-level AI governance structure, senior management AI risk reporting cadence, AI risk committee, or integration of AI risk into enterprise risk management framework"
+    }
+  ]
+}

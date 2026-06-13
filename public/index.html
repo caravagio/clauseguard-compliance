@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClauseGuard — Financial AI Compliance Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">⚖</div>
+        <div>
+          <div class="logo-name">ClauseGuard</div>
+          <div class="logo-sub">Financial AI Compliance</div>
+        </div>
+      </div>
+      <div class="mode-badge" id="modeBadge">Mock Mode</div>
+    </div>
+
+    <div class="sidebar-label">Compliance Rulebook</div>
+    <div class="sidebar-desc">20 rules · 6 categories · Click any rule for details</div>
+
+    <div class="rulebook" id="rulebook">
+      <!-- Populated by app.js -->
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tabs">
+        <button class="tab active" data-tab="analyze" onclick="switchTab('analyze')">
+          <span class="tab-icon">📄</span> Analyze Document
+        </button>
+        <button class="tab" data-tab="ask" onclick="switchTab('ask')">
+          <span class="tab-icon">💬</span> Ask Regulations
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== ANALYZE TAB ===== -->
+    <div class="tab-content active" id="tab-analyze">
+      <div class="page-intro">
+        <h1>Document Compliance Analysis</h1>
+        <p>Upload a vendor contract, AI system description, or policy document. The agent checks every rule in the rulebook and shows step-by-step reasoning for each finding.</p>
+      </div>
+
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-inner" id="uploadInner">
+          <div class="upload-icon">📂</div>
+          <div class="upload-title">Drop a document here</div>
+          <div class="upload-sub">PDF or TXT — or paste text below</div>
+          <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+            Browse Files
+          </button>
+          <input type="file" id="fileInput" accept=".pdf,.txt,.doc,.docx" hidden />
+          <div class="upload-filename" id="uploadFilename"></div>
+        </div>
+      </div>
+
+      <div class="paste-section">
+        <div class="paste-header">
+          <span>Or paste document text</span>
+          <button class="btn-link" id="togglePaste" onclick="togglePaste()">Show text input</button>
+        </div>
+        <textarea
+          id="pasteText"
+          class="paste-textarea hidden"
+          placeholder="Paste your vendor contract, AI system description, or policy document text here..."
+          rows="10"
+        ></textarea>
+      </div>
+
+      <div class="analyze-actions">
+        <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeDocument()">
+          <span id="analyzeBtnText">Analyze for Compliance</span>
+          <span id="analyzeBtnSpinner" class="spinner hidden"></span>
+        </button>
+        <button class="btn btn-ghost" onclick="clearAnalysis()">Clear</button>
+        <span class="sample-link">No document? <a href="#" onclick="loadSample(); return false;">Load a sample contract</a></span>
+      </div>
+
+      <!-- Results -->
+      <div id="analysisResults" class="hidden">
+        <!-- Risk Summary Dashboard -->
+        <div class="risk-dashboard" id="riskDashboard">
+          <div class="risk-header">
+            <div>
+              <div class="doc-type" id="docType"></div>
+              <div class="risk-level" id="riskLevel"></div>
+            </div>
+            <div class="risk-counts" id="riskCounts"></div>
+          </div>
+          <div class="executive-summary" id="execSummary"></div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <span class="filter-label">Filter findings:</span>
+          <button class="filter-btn active" data-filter="all" onclick="filterFindings('all', this)">All</button>
+          <button class="filter-btn fail" data-filter="FAIL" onclick="filterFindings('FAIL', this)">
+            <span class="dot red"></span> Fail
+          </button>
+          <button class="filter-btn warn" data-filter="WARN" onclick="filterFindings('WARN', this)">
+            <span class="dot yellow"></span> Warning
+          </button>
+          <button class="filter-btn pass" data-filter="PASS" onclick="filterFindings('PASS', this)">
+            <span class="dot green"></span> Pass
+          </button>
+          <button class="filter-btn na" data-filter="N/A" onclick="filterFindings('N/A', this)">
+            <span class="dot gray"></span> N/A
+          </button>
+        </div>
+
+        <div id="findingsList"></div>
+      </div>
+
+      <div id="analyzeError" class="error-box hidden"></div>
+    </div>
+
+    <!-- ===== ASK REGULATIONS TAB ===== -->
+    <div class="tab-content hidden" id="tab-ask">
+      <div class="page-intro">
+        <h1>Ask About Regulations</h1>
+        <p>Ask any question about the compliance framework. The agent answers only from the rulebook — with specific rule citations. If your question is outside scope, it says so.</p>
+      </div>
+
+      <div class="suggested-questions">
+        <div class="sq-label">Suggested questions</div>
+        <div class="sq-list">
+          <button class="sq-btn" onclick="askSuggested('What are the explainability requirements?')">What are the explainability requirements?</button>
+          <button class="sq-btn" onclick="askSuggested('What is SR 11-7?')">What is SR 11-7?</button>
+          <button class="sq-btn" onclick="askSuggested('What rules apply to vendor AI?')">What rules apply to vendor AI?</button>
+          <button class="sq-btn" onclick="askSuggested('What are the critical severity rules?')">What are the critical severity rules?</button>
+          <button class="sq-btn" onclick="askSuggested('What are the fair lending requirements?')">What are the fair lending requirements?</button>
+          <button class="sq-btn" onclick="askSuggested('What data governance rules apply?')">What data governance rules apply?</button>
+        </div>
+      </div>
+
+      <div class="chat-container" id="chatContainer">
+        <div class="chat-empty" id="chatEmpty">
+          <div class="chat-empty-icon">💬</div>
+          <div>Ask a question about the financial AI compliance framework</div>
+          <div class="chat-empty-sub">Answers are grounded in the 20 rules in the ClauseGuard rulebook</div>
+        </div>
+        <div id="chatMessages"></div>
+      </div>
+
+      <div class="chat-input-area">
+        <textarea
+          id="questionInput"
+          class="chat-input"
+          placeholder="Ask about any regulation, rule, or compliance requirement..."
+          rows="2"
+          onkeydown="handleQuestionKey(event)"
+        ></textarea>
+        <button class="btn btn-primary chat-send" id="askBtn" onclick="askQuestion()">
+          <span id="askBtnText">Ask</span>
+          <span id="askBtnSpinner" class="spinner hidden"></span>
+        </button>
+      </div>
+
+      <div id="askError" class="error-box hidden"></div>
+    </div>
+  </main>
+
+  <!-- Rule Detail Modal -->
+  <div class="modal-overlay hidden" id="ruleModal" onclick="closeModal(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeRuleModal()">✕</button>
+      <div class="modal-category" id="modalCategory"></div>
+      <div class="modal-id" id="modalId"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-severity" id="modalSeverity"></div>
+      <div class="modal-section-label">Description</div>
+      <div class="modal-body" id="modalDescription"></div>
+      <div class="modal-section-label">Regulatory Source</div>
+      <div class="modal-source" id="modalSource"></div>
+      <div class="modal-section-label">Violation Trigger</div>
+      <div class="modal-trigger" id="modalTrigger"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
