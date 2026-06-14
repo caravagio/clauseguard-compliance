@@ -1,16 +1,6 @@
 'use strict';
 
-const MOCK_MODE = !process.env.AZURE_OPENAI_ENDPOINT || process.env.MOCK_MODE === 'true';
-
-function getClient() {
-  const { AzureOpenAI } = require('openai');
-  return new AzureOpenAI({
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
-    apiKey: process.env.AZURE_OPENAI_KEY,
-    apiVersion: '2024-02-01',
-    deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
-  });
-}
+const AGENT_MODE = !!process.env.AZURE_AGENT_ENDPOINT && process.env.MOCK_MODE !== 'true';
 
 function buildRulebookContext(rules) {
   return rules.rules
@@ -25,37 +15,25 @@ function buildRulebookContext(rules) {
 }
 
 async function answerQuestion(question, rules) {
-  if (MOCK_MODE) return getMockAnswer(question, rules);
+  if (!AGENT_MODE) return getMockAnswer(question, rules);
 
-  const client = getClient();
+  const { callAgent } = require('./agent');
   const rulebookContext = buildRulebookContext(rules);
 
-  const systemPrompt = `You are ClauseGuard Compliance's knowledge assistant. You answer questions about financial AI regulations.
+  const userMessage = `Answer this question using ONLY the compliance rulebook below. Always cite specific rule IDs (e.g., MRM-001) and regulatory sources. If the question is outside the rulebook scope, say so and list what topics you can help with.
 
-STRICT RULES:
-1. Answer ONLY from the rulebook provided below — never use knowledge outside it
-2. Always cite specific rule IDs (e.g., MRM-001) and regulatory sources in your answers
-3. If a question is outside the scope of this rulebook, say so clearly and list what topics you can help with
-4. Format answers with rule citations using **RULE-ID — Rule Name** format
-5. Be precise and complete — quote descriptions when relevant
+QUESTION: ${question}
 
 COMPLIANCE RULEBOOK:
 ${rulebookContext}`;
 
-  const response = await client.chat.completions.create({
-    model: process.env.AZURE_OPENAI_DEPLOYMENT,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: question },
-    ],
-    temperature: 0.1,
-  });
-
-  return {
-    question,
-    answer: response.choices[0].message.content,
-    mode: 'Azure OpenAI',
-  };
+  try {
+    const answer = await callAgent(userMessage);
+    return { question, answer, mode: 'Azure AI Foundry' };
+  } catch (err) {
+    console.error('Agent Q&A failed, falling back to mock:', err.message);
+    return getMockAnswer(question, rules);
+  }
 }
 
 function getMockAnswer(question, rules) {

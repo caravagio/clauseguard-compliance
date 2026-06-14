@@ -22,7 +22,7 @@ const upload = multer({
 
 const rules = JSON.parse(fs.readFileSync(path.join(__dirname, 'rules', 'compliance-rules.json'), 'utf8'));
 
-const MOCK_MODE = !process.env.AZURE_OPENAI_ENDPOINT || process.env.MOCK_MODE === 'true';
+const MOCK_MODE = !process.env.AZURE_AGENT_ENDPOINT || process.env.MOCK_MODE === 'true';
 
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -93,6 +93,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`\n🛡  ClauseGuard Compliance running at http://localhost:${PORT}`);
-  console.log(`   Mode: ${MOCK_MODE ? '📋 Mock (realistic sample findings)' : '☁️  Azure OpenAI — ' + process.env.AZURE_OPENAI_DEPLOYMENT}`);
+  console.log(`   Mode: ${MOCK_MODE ? '📋 Mock (realistic sample findings)' : '☁️  Azure AI Foundry — ' + process.env.AZURE_AGENT_NAME}`);
   console.log(`   Rules loaded: ${rules.rules.length} rules across ${rules.categories.length} categories\n`);
 });

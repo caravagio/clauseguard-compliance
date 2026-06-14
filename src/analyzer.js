@@ -1,41 +1,34 @@
 'use strict';
 
-const MOCK_MODE = !process.env.AZURE_OPENAI_ENDPOINT || process.env.MOCK_MODE === 'true';
+const nlp = require('compromise');
 
-function getClient() {
-  const { AzureOpenAI } = require('openai');
-  return new AzureOpenAI({
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
-    apiKey: process.env.AZURE_OPENAI_KEY,
-    apiVersion: '2024-02-01',
-    deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
-  });
+const AGENT_MODE = !!process.env.AZURE_AGENT_ENDPOINT && process.env.MOCK_MODE !== 'true';
+
+function scrubPii(text) {
+  const scrubbed = text
+    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN]')
+    .replace(/\b(?:\d{4}[- ]){3}\d{4}\b/g, '[CARD]')
+    .replace(/\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/g, '[PHONE]')
+    .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, '[EMAIL]');
+
+  const doc = nlp(scrubbed);
+  doc.people().replaceWith('[PERSON]');
+  doc.organizations().replaceWith('[ORG]');
+  doc.places().replaceWith('[PLACE]');
+  return doc.text();
 }
 
 async function analyzeDocument(text, rules) {
-  if (MOCK_MODE) return getMockAnalysis(rules);
+  if (!AGENT_MODE) return getMockAnalysis(rules);
 
-  const client = getClient();
-
+  const { callAgent } = require('./agent');
   const rulesText = JSON.stringify(rules.rules, null, 2);
-  const documentExcerpt = text.length > 14000 ? text.slice(0, 14000) + '\n\n[Document truncated for analysis — first 14,000 characters shown]' : text;
+  const clean = scrubPii(text);
+  const documentExcerpt = clean.length > 14000
+    ? clean.slice(0, 14000) + '\n\n[Document truncated for analysis — first 14,000 characters shown]'
+    : clean;
 
-  const systemPrompt = `You are ClauseGuard Compliance, an expert AI compliance analyst specializing in financial sector regulations. Analyze documents for compliance with financial AI regulations and return structured JSON findings.
-
-Rules:
-1. Check EVERY rule in the rulebook — do not skip any
-2. Quote specific text from the document as evidence when available
-3. Show step-by-step reasoning explaining WHY each finding passes or fails
-4. Be precise — only flag actual violations, not hypothetical risks
-5. Always reference the rule ID and regulatory source in your reasoning
-
-Status definitions:
-- PASS: Document explicitly satisfies the requirement
-- FAIL: Document violates or critically omits the requirement
-- WARN: Document partially addresses it but has material gaps
-- N/A: This rule clearly does not apply to this document type`;
-
-  const userPrompt = `Analyze this document for financial AI compliance against all 20 rules.
+  const userMessage = `Analyze this document for financial AI compliance against all 20 rules.
 
 DOCUMENT:
 ---
@@ -76,17 +69,14 @@ Return ONLY valid JSON in this exact schema (no markdown, no explanation):
   ]
 }`;
 
-  const response = await client.chat.completions.create({
-    model: process.env.AZURE_OPENAI_DEPLOYMENT,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
-    ],
-    temperature: 0.1,
-    response_format: { type: 'json_object' },
-  });
-
-  return JSON.parse(response.choices[0].message.content);
+  try {
+    const output = await callAgent(userMessage);
+    const jsonStr = output.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+    return JSON.parse(jsonStr);
+  } catch (err) {
+    console.error('Agent analysis failed, falling back to mock:', err.message);
+    return getMockAnalysis(rules);
+  }
 }
 
 function getMockAnalysis(rules) {

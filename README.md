@@ -20,6 +20,15 @@ AI compliance analysis for the financial sector. Upload a vendor contract, AI sy
 | Third-Party AI Risk | TPR-001–003 | OCC 2023-17, Federal Reserve SR 13-19 |
 | Audit & Accountability | AA-001–004 | SR 11-7, SEC Rule 17a-4, FINRA Rules 4511–4512 |
 
+## Privacy & PII Handling
+
+Before any document text is sent to the AI model, ClauseGuard runs a two-stage scrubbing pass to remove personal identifiers:
+
+1. **Regex redaction** — structured PII is replaced with labelled tokens: `[SSN]`, `[CARD]`, `[PHONE]`, and `[EMAIL]`.
+2. **NLP redaction** — [compromise](https://github.com/spencermountain/compromise) tags and replaces named entities: `[PERSON]` (individuals), `[ORG]` (companies), and `[PLACE]` (addresses and locations).
+
+The scrubbed text is what reaches the AI model; the original document is never stored to disk. As a result, compliance findings will reference placeholder tokens rather than real names or identifiers when quoting contract text.
+
 ## Quick Start
 
 ```bash
