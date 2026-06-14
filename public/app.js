@@ -471,7 +471,7 @@ function appendAgentMessage(text, mode) {
       <div class="msg-avatar">⚖</div>
       <div class="msg-bubble">${markdownToHtml(text)}</div>
     </div>
-    <div class="msg-meta">ClauseGuard · ${mode || ''} · ${new Date().toLocaleTimeString()}</div>`;
+    <div class="msg-meta">ClauseGuard Compliance · ${mode || ''} · ${new Date().toLocaleTimeString()}</div>`;
   container.appendChild(div);
   scrollChat();
 }

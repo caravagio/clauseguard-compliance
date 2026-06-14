@@ -30,7 +30,7 @@ async function answerQuestion(question, rules) {
   const client = getClient();
   const rulebookContext = buildRulebookContext(rules);
 
-  const systemPrompt = `You are ClauseGuard's compliance knowledge assistant. You answer questions about financial AI regulations.
+  const systemPrompt = `You are ClauseGuard Compliance's knowledge assistant. You answer questions about financial AI regulations.
 
 STRICT RULES:
 1. Answer ONLY from the rulebook provided below — never use knowledge outside it
@@ -65,7 +65,7 @@ function getMockAnswer(question, rules) {
   if (q.includes('explainab') || q.includes('transparen') || q.includes('interpret')) {
     return {
       question,
-      answer: `The ClauseGuard rulebook contains three rules governing explainability and transparency:
+      answer: `The ClauseGuard Compliance rulebook contains three rules governing explainability and transparency:
 
 **EXT-001 — Adverse Action Notice with AI-Specific Reasons** *(Critical)*
 When AI contributes to a credit adverse action, ECOA Regulation B and **CFPB Circular 2022-03** require specific, human-readable reasons in plain language — not generic legacy codes. The CFPB has explicitly stated that "black box" AI explanations do not satisfy Regulation B when the model applies criteria beyond a traditional scorecard.
@@ -105,7 +105,7 @@ Contracts must explicitly grant: (1) institution annual audit rights with 30-day
   if (q.includes('sr 11-7') || q.includes('sr11-7') || q.includes('model risk management')) {
     return {
       question,
-      answer: `**SR 11-7** is the foundational model risk management framework and the most-cited regulatory source in the ClauseGuard rulebook — referenced across 6 of 20 rules.
+      answer: `**SR 11-7** is the foundational model risk management framework and the most-cited regulatory source in the ClauseGuard Compliance rulebook — referenced across 6 of 20 rules.
 
 **What is SR 11-7?**
 SR 11-7 is a 2011 joint supervisory letter issued by the **Federal Reserve** and **OCC** that established the comprehensive framework for managing model risk at financial institutions. A 2021 update extended its principles explicitly to AI/ML systems. It defines "model" broadly enough to encompass virtually all AI systems used in financial decisions.
@@ -227,7 +227,7 @@ These 8 rules address requirements where violation creates the highest regulator
   if (q.includes('categor') || q.includes('what rules') || q.includes('what topics') || q.includes('what does') || q.includes('overview') || q.includes('summary')) {
     return {
       question,
-      answer: `The ClauseGuard rulebook contains **20 rules across 6 regulatory categories**:
+      answer: `The ClauseGuard Compliance rulebook contains **20 rules across 6 regulatory categories**:
 
 **1. Model Risk Management** (4 rules — MRM-001 to MRM-004)
 Covers SR 11-7 requirements: independent model validation, ongoing performance monitoring, model inventory/documentation, and change management protocols.
@@ -255,7 +255,7 @@ Ask me about any category, specific rule, or regulatory source for detailed expl
   // Out-of-scope default
   return {
     question,
-    answer: `I'm designed to answer questions specifically about the **20 financial AI compliance rules** in the ClauseGuard rulebook. Your question appears to be outside the scope of these rules, and I won't speculate beyond what the rulebook contains.
+    answer: `I'm designed to answer questions specifically about the **20 financial AI compliance rules** in the ClauseGuard Compliance rulebook. Your question appears to be outside the scope of these rules, and I won't speculate beyond what the rulebook contains.
 
 **What I can help you with:**
 

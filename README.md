@@ -1,4 +1,4 @@
-# ClauseGuard
+# ClauseGuard Compliance
 
 AI compliance analysis for the financial sector. Upload a vendor contract, AI system description, or policy document and get a step-by-step reasoning report checked against 20 real financial AI regulations.
 

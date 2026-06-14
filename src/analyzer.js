@@ -20,7 +20,7 @@ async function analyzeDocument(text, rules) {
   const rulesText = JSON.stringify(rules.rules, null, 2);
   const documentExcerpt = text.length > 14000 ? text.slice(0, 14000) + '\n\n[Document truncated for analysis — first 14,000 characters shown]' : text;
 
-  const systemPrompt = `You are ClauseGuard, an expert AI compliance analyst specializing in financial sector regulations. Analyze documents for compliance with financial AI regulations and return structured JSON findings.
+  const systemPrompt = `You are ClauseGuard Compliance, an expert AI compliance analyst specializing in financial sector regulations. Analyze documents for compliance with financial AI regulations and return structured JSON findings.
 
 Rules:
 1. Check EVERY rule in the rulebook — do not skip any

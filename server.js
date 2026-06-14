@@ -92,7 +92,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`\n🛡  ClauseGuard running at http://localhost:${PORT}`);
+  console.log(`\n🛡  ClauseGuard Compliance running at http://localhost:${PORT}`);
   console.log(`   Mode: ${MOCK_MODE ? '📋 Mock (realistic sample findings)' : '☁️  Azure OpenAI — ' + process.env.AZURE_OPENAI_DEPLOYMENT}`);
   console.log(`   Rules loaded: ${rules.rules.length} rules across ${rules.categories.length} categories\n`);
 });
