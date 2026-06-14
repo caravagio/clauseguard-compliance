@@ -39,8 +39,24 @@ async function loadStatus() {
   } catch (_) {}
 }
 
+// ── Sidebar (mobile) ───────────────────────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('visible');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('visible');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
+}
+
 // ── Tab switching ──────────────────────────────────────────────────────────
 function switchTab(name) {
+  closeSidebar();
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tab-content').forEach(c => {
     const isTarget = c.id === `tab-${name}`;
@@ -98,6 +114,7 @@ function toggleCategory(header) {
 function showRuleModal(ruleId) {
   const rule = allRules.find(r => r.id === ruleId);
   if (!rule) return;
+  closeSidebar();
 
   document.getElementById('modalCategory').textContent = rule.category;
   document.getElementById('modalId').textContent = rule.id;
@@ -119,7 +136,7 @@ function closeRuleModal() {
 function closeModal(e) {
   if (e.target.id === 'ruleModal') closeRuleModal();
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRuleModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeRuleModal(); closeSidebar(); } });
 
 // ── File Upload ────────────────────────────────────────────────────────────
 function setupFileInput() {
@@ -213,7 +230,6 @@ function clearAnalysis() {
 
 // ── Analyze Document ───────────────────────────────────────────────────────
 async function analyzeDocument() {
-  const btn = document.getElementById('analyzeBtn');
   const text = document.getElementById('pasteText').value.trim();
 
   if (!selectedFile && !text) {
@@ -224,6 +240,9 @@ async function analyzeDocument() {
   setAnalyzeLoading(true);
   document.getElementById('analyzeError').classList.add('hidden');
   document.getElementById('analysisResults').classList.add('hidden');
+
+  // Yield to the browser so the spinner and disabled state render before the fetch starts
+  await new Promise(r => requestAnimationFrame(r));
 
   try {
     let body, headers = {};

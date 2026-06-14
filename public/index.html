@@ -8,6 +8,8 @@
 </head>
 <body>
   <!-- Sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="logo">
@@ -18,6 +20,7 @@
         </div>
       </div>
       <div class="mode-badge" id="modeBadge">Mock Mode</div>
+      <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close menu">✕</button>
     </div>
 
     <div class="sidebar-label">Compliance Rulebook</div>
@@ -31,6 +34,7 @@
   <!-- Main content -->
   <main class="main">
     <div class="topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
       <div class="tabs">
         <button class="tab active" data-tab="analyze" onclick="switchTab('analyze')">
           <span class="tab-icon">📄</span> Analyze Document
